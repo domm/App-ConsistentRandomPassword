@@ -29,6 +29,7 @@ print "key: ";
 ReadMode 2;
 my $key = <STDIN>;
 ReadMode 0;
+chomp($key);
 
 # calc the password
 my $pwd = App::ConsistentRandomPassword->new({site=>$site})->password($key);
