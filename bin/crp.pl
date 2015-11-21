@@ -30,11 +30,13 @@ ReadMode 2;
 my $key = <STDIN>;
 ReadMode 0;
 chomp($key);
+print "\n";
 
 # calc the password
-my $pwd = App::ConsistentRandomPassword->new({site=>$site})->password($key);
+my $crp = App::ConsistentRandomPassword->new({site=>$site});
+my $pwd = $crp->password($key);
 
 # put it in clipboard
 Clipboard->copy($pwd);
-say "\nYour password for '$site' is ready to paste";
+printf("Your password for '%s' is ready to paste\n",$crp->base);
 

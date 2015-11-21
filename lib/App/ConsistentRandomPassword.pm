@@ -12,7 +12,7 @@ use Path::Class;
 
 use base qw(Class::Accessor::Fast);
 
-__PACKAGE__->mk_accessors(qw(site global_entropy sites));
+__PACKAGE__->mk_accessors(qw(site global_entropy sites base));
 
 sub password {
     my ( $self, $key ) = @_;
@@ -25,7 +25,7 @@ sub match_site {
     my ($self) = @_;
 
     my $site  = $self->site;
-    my $sites = $self->sites;
+    my $sites = $self->get_config;
 
     my $matched = {};
     foreach my $c (@$sites) {
@@ -50,8 +50,8 @@ sub get_config {
         };
     }
     my $json = $file->slurp;
-
     my $sites = decode_json($json);
+
     $self->sites($sites);
 
     my $global_entropy = file( File::HomeDir->my_home, '.crp.entropy' );
@@ -85,8 +85,12 @@ sub prepare_seed {
             my $path = join( '/', @path );
             $target .= $path;
         }
+        if ($matched->{main_domain}) {
+            $target=~s/^[^\.]+\.//;
+        }
     }
 
+    $self->base($target);
     my @data = ( $target, $key );
     push( @data, $self->global_entropy ) if $self->global_entropy;
     push( @data, $matched->{entropy} )   if $matched->{entropy};
@@ -160,6 +164,14 @@ sub pwd_number {
     $size ||= 16;
 
     return join( '', rand_chars( set => 'numeric', size => $size ) );
+}
+
+sub pwd_simple_nonletter {
+    my ( $self, $matched, $size ) = @_;
+    $size ||= 16;
+
+    return join( '', rand_set( set => ['%','&','+',',','.', ':', ';', '=', '?', '_','(',')'], size => $size ) );
+
 }
 
 sub site_from_firefox {
