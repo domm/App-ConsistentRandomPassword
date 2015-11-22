@@ -3,6 +3,10 @@ package App::ConsistentRandomPassword;
 use 5.010;
 use strict;
 use warnings;
+
+our $VERSION='1.000';
+# ABSTRACT: Create consistent random passwords
+
 use Digest::SHA1 qw(sha1_hex);
 use Data::Random qw(:all);
 use URI;

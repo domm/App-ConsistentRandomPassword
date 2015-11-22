@@ -6,6 +6,8 @@ use App::ConsistentRandomPassword;
 use Term::ReadKey;
 use Clipboard;
 
+# PODNAME: crp.pl
+
 # try to get site from commandline
 my $site = shift @ARGV;
 
