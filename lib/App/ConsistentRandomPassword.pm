@@ -81,6 +81,14 @@ sub prepare_seed {
         my $uri = URI->new( $self->site );
         $target = $uri->host;
         $target =~ s/^www\.//;
+
+        if ($matched->{main_domain}) {
+            $target=~/([\w-]+\.[\w]+)$/;
+            if (my $main = $1) {
+                $target = $main;
+            }
+        }
+
         if ( my $count = $matched->{with_path} ) {
             my @path = split( /\//, $uri->path, $count + 2 );
             if ( @path > $count + 1 ) {
@@ -88,9 +96,6 @@ sub prepare_seed {
             }
             my $path = join( '/', @path );
             $target .= $path;
-        }
-        if ($matched->{main_domain}) {
-            $target=~s/^[^\.]+\.//;
         }
     }
 
