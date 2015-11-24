@@ -81,16 +81,25 @@ sub prepare_seed {
         my $uri = URI->new( $self->site );
         $target = $uri->host;
         $target =~ s/^www\.//;
+
+        if ($matched->{main_domain}) {
+            $target=~/([\w-]+\.[\w]+)$/;
+            if (my $main = $1) {
+                $target = $main;
+            }
+        }
+
+        if ( $uri->port != 80 && $uri->port != 433 ) {
+            $target.=":".$uri->port;
+        }
+
         if ( my $count = $matched->{with_path} ) {
             my @path = split( /\//, $uri->path, $count + 2 );
             if ( @path > $count + 1 ) {
                 my $discard = pop(@path);
             }
-            my $path = join( '/', @path );
-            $target .= $path;
-        }
-        if ($matched->{main_domain}) {
-            $target=~s/^[^\.]+\.//;
+            my $path = join( '/', @path ) if $path[1];
+            $target .= $path if $path;
         }
     }
 
