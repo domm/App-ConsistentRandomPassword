@@ -89,6 +89,10 @@ sub prepare_seed {
             }
         }
 
+        if ( $uri->port != 80 && $uri->port != 433 ) {
+            $target.=":".$uri->port;
+        }
+
         if ( my $count = $matched->{with_path} ) {
             my @path = split( /\//, $uri->path, $count + 2 );
             if ( @path > $count + 1 ) {
