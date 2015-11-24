@@ -94,8 +94,8 @@ sub prepare_seed {
             if ( @path > $count + 1 ) {
                 my $discard = pop(@path);
             }
-            my $path = join( '/', @path );
-            $target .= $path;
+            my $path = join( '/', @path ) if $path[1];
+            $target .= $path if $path;
         }
     }
 
