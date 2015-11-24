@@ -89,7 +89,7 @@ sub prepare_seed {
             }
         }
 
-        if ( $uri->port != 80 && $uri->port != 433 ) {
+        if ( $uri->port != 80 && $uri->port != 443 ) {
             $target.=":".$uri->port;
         }
 
