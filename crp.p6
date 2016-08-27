@@ -3,6 +3,8 @@
 use JSON::Tiny;
 use Digest::MD5;
 use URI;
+use Terminal::Readsecret;
+use experimental :pack;
 
 use Inline::Perl5;
 
@@ -77,11 +79,11 @@ sub normalize_site(Str $site, Hash $match) {
 }
 
 sub get_user_key(Str $site) {
-    # Terminal::Readsecret ?
-
-    my $key = prompt "Please enter key for $site: ";
+    my $key = getsecret("Please enter your key for $site: ");
     return $key;
 
+    # another way might be https://github.com/krunen/term-termios
+    # gfldex | CLI::Promt::Password may actually what most ppl look for
 }
 
 sub set_consistent_seed(Str $site, Str $key, Str $global_entropy?, Str $match_entropy?) {
@@ -90,10 +92,9 @@ sub set_consistent_seed(Str $site, Str $key, Str $global_entropy?, Str $match_en
     @data.push($global_entropy) if $global_entropy;
     @data.push($match_entropy) if $match_entropy;
     my $hex = $d.md5_buf(@data);
-    # TODO how ?? my $int = $hex.base(10);
-    # say substr($hex,0,8).base(10);
-    #srand(substr($hex,0,8).base(10));
-    srand(1);
+    my @ints = $hex.unpack("CxCxCxCxCxC");
+    my $seed = @ints.reduce: * ~ *;
+    srand($seed.Int);
 }
 
 sub get_password(Hash $match) {
