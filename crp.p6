@@ -123,58 +123,33 @@ sub make_pwd(Str $definition) {
         $generator = $0;
         $size= $1.Str.Int;
     }
-    given $generator {
-        when 'xkcd' { return pwd_xkcd }
-        when 'alphanumeric' { return pwd_alphanumeric($size) }
-        when 'mixed_case' { return pwd_mixed_case($size) }
-        when 'printable' { return  pwd_printable($size) }
-        when 'number' { return  pwd_number($size) }
-        when 'simple_nonletter' { return pwd_simple_nonletter($size) }
-        default { return pwd_xkcd }
+
+    my $function = '&pwd_' ~ $generator;
+    if ($size) {
+	::($function).($size);
     }
-
-    # TODO how to call a function by name?
-    #my $func = 'pwd_' ~ $generator;
-    #$func($size);
+    else {
+	::($function).();
+    }
 }
 
-sub pwd_xkcd {
-    return "Photon Staple Horse Fire";
+sub pwd_xkcd(Int $size?=4) {
+    return "Photon Staple Horse Fire $size";
 }
-
-multi pwd_alphanumeric(Any $size) {
-    pwd_alphanumeric(16);
+sub pwd_number(Int $size?=8) {
+    return "42";
 }
-multi pwd_alphanumeric(Int $size) {
-    return "alpahnum $size";
+sub pwd_simple_nonletter(Int $size?=16) {
+    return "simple nonletter $size";
 }
-
-multi pwd_printable(Any $size) {
-    pwd_printable(16);
-}
-multi pwd_printable(Int $size) {
-    return "printable $size";
-}
-
-multi pwd_mixed_case(Any $size) {
-    pwd_mixed_case(16);
-}
-multi pwd_mixed_case(Int $size) {
+sub pwd_mixed_case(Int $size?=16) {
     return "MixEdCasE $size";
 }
-
-multi pwd_number(Any $size) {
-    pwd_number(16);
+sub pwd_alphanumeric(Int $size?=16) {
+    return "alpahnum $size";
 }
-multi pwd_number(Int $size) {
-    return "number $size";
-}
-
-multi pwd_simple_nonletter(Any $size) {
-    pwd_simple_nonletter(16);
-}
-multi pwd_simple_nonletter(Int $size) {
-    return "simple nonletter $size";
+sub pwd_printable(Int $size?=16) {
+    return "printable $size";
 }
 
 =finish
