@@ -1,5 +1,6 @@
 #!/home/domm/rakudo-star-2016.07/install/bin/perl6
 
+use File::HomeDir;
 use JSON::Tiny;
 use Digest::MD5;
 use URI;
@@ -11,6 +12,8 @@ use Inline::Perl5;
 sub MAIN (Str $insite?) {
     my @sites = get_config_sites;
     my $global_entropy = get_config_entropy;
+
+get_site_from_firefox();
 
     my $site = $insite || get_site;
     my $match = match_site($site, @sites);
@@ -33,13 +36,13 @@ sub get_site {
 }
 
 sub get_config_sites {
-    my $json = '/home/domm/.crp.json'.IO.slurp;
+    my $json =  File::HomeDir.my-home.IO.child('.crp.json').slurp;
     my @sites = from-json($json);
     return @sites;
 }
 
 sub get_config_entropy {
-    return '/home/domm/.crp.entropy'.IO.slurp;
+    return File::HomeDir.my-home.IO.child('.crp.entropy').slurp;
 }
 
 sub match_site(Str $site, @sites) {
@@ -151,5 +154,17 @@ sub pwd_alphanumeric(Int $size?=16) {
 sub pwd_printable(Int $size?=16) {
     return "printable $size";
 }
+
+sub get_site_from_firefox() {
+    my $ffdir = File::HomeDir.my-home.IO.child('.mozilla/firefox').dir;
+
+    for $ffdir -> $file {
+	say $file;
+	#if $file.basename ~~ /\.default$/ {
+		#    say "GOT file $file";
+		#}
+    }
+}
+
 
 =finish
