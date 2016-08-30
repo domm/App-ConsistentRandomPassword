@@ -7,7 +7,12 @@ use URI;
 use Terminal::Readsecret;
 use experimental :pack;
 
+#use Inline::Perl5;
+#use Data::Random:from<Perl5>;
 use Inline::Perl5;
+my $p5 = Inline::Perl5.new;
+$p5.use('Data::Random');
+
 
 sub MAIN (Str $insite?) {
     my @sites = get_config_sites;
@@ -137,6 +142,7 @@ sub make_pwd(Str $definition) {
 }
 
 sub pwd_xkcd(Int $size?=4) {
+say $p5.call('Data::Random::rand_words');
     return "Photon Staple Horse Fire $size";
 }
 sub pwd_number(Int $size?=8) {
