@@ -187,7 +187,6 @@ sub pwd_simple_nonletter {
 }
 
 sub site_from_firefox {
-    my $site;
     my $ffdir = dir( File::HomeDir->my_home, '.mozilla/firefox' );
     return unless -d $ffdir;
     while ( my $thing = $ffdir->next ) {
