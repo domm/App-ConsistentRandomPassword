@@ -48,10 +48,9 @@ sub get_config {
     my $file = file( File::HomeDir->my_home, '.crp.json' );
     unless ( -e $file ) {
         say "No config found at $file, you might want to set one up...";
-        return {
-            entropy => 'none',
-            sites   => [],
-        };
+        return [{
+            match   => ".*",
+        }];
     }
     my $json = $file->slurp;
     my $sites = decode_json($json);
@@ -188,6 +187,73 @@ sub pwd_simple_nonletter {
 }
 
 q{ listening to: Anna Mabo - Notre Dame };
+
+=head1 SYNOPSIS
+
+  say App::ConsistentRandomPassword
+      ->new({ site=> 'https://example.com' })
+      ->password( 'hunter2' );
+
+  # or use the script included with this dist:
+  ~# crp.pl https://example.com
+  key: <ENTER YOUR SECRET>
+  Your password for 'example.com' is ready to paste
+
+=head1 DESCRIPTION
+
+C<App::ConsistentRandomPassword> is a tool to create consistent but
+random password, best suited to use for throwaway or other not
+high-security accounts.
+
+It works by combining the URL of the service you want to use, a
+passphrase you have to enter, and optionally some more bits of
+entropy, calculating a checksum out of this data and then initalizing
+the random number generator with a seed based on that checksum. Then
+it uses various methods to generate a new password, without storing
+the password anywhere.
+
+If you later need to re-generate the password, run the algorithm again
+on the same input, and you'll get the same password.
+
+C<App::ConsistentRandomPassword> uses a config file (F<.crp.json>)
+where you can fine-tune how the passwords for different sites should
+be generated. You can combine 6 different password generators, ignore
+subdomains (so C<foo.example.com> and C<bar.example.com> have the same
+password), include paths (so C<example.com/foo> and C<example.com/bar>
+have different passwords) and even base the password on something
+that's not an URI.
+
+=head2 Password generators
+
+=head3 xkcd
+
+=head3 alphanumeric
+
+=head3 mixed_case
+
+=head3 printable
+
+=head3 number
+
+=head3 simple_nonletter
+
+=head2 Configuration Files
+
+=head3 crp.json
+
+=head4 match
+
+=head4 method
+
+=head4 entropy
+
+=head4 with_path
+
+=head4 main_domain
+
+=head4 no_uri
+
+=head3 crp.entropy
 
 =head1 THANKS
 
