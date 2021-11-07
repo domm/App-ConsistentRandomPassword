@@ -188,3 +188,13 @@ sub pwd_simple_nonletter {
 }
 
 q{ listening to: Anna Mabo - Notre Dame };
+
+=head1 THANKS
+
+Thanks to
+
+=over
+
+=item * <Paul Cochrane|https://github.com/paultcochrane> for various cleanup pull requests
+
+=back
