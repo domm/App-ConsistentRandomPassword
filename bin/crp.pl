@@ -7,7 +7,7 @@ use Term::ReadKey;
 use Clipboard;
 
 # PODNAME: crp.pl
-# ABSTRACT: Create consistent random passwords
+# ABSTRACT: script to create consistent random passwords
 # VERSION
 
 # try to get site from commandline

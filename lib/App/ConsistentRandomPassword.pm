@@ -4,7 +4,7 @@ use 5.010;
 use strict;
 use warnings;
 
-# ABSTRACT: Backend to create consistent random passwords
+# ABSTRACT: Create consistent random passwords
 
 # VERSION
 
