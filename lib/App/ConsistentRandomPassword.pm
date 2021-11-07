@@ -187,22 +187,3 @@ sub pwd_simple_nonletter {
 
 }
 
-sub site_from_firefox {
-    my $ffdir = dir( File::HomeDir->my_home, '.mozilla/firefox' );
-    return unless -d $ffdir;
-    while ( my $thing = $ffdir->next ) {
-        if ( $thing->is_dir && $thing->basename =~ /\.default$/ ) {
-            my $storefile = $thing->file('sessionstore-backups/recovery.js');
-            my $data      = decode_json( $storefile->slurp );
-            my $window    = $data->{selectedWindow} - 1;
-            my $active    = $data->{windows}[$window]{selected} - 1;
-            my $index = $data->{windows}[$window]{tabs}[$active]{index} - 1;
-            my $current =
-                $data->{windows}[$window]{tabs}[$active]{entries}[$index]
-                {url};
-            return $current if $current;
-        }
-    }
-}
-
-1;
