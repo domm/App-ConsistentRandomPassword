@@ -261,6 +261,6 @@ Thanks to
 
 =over
 
-=item * <Paul Cochrane|https://github.com/paultcochrane> for various cleanup pull requests
+=item * L<Paul Cochrane|https://github.com/paultcochrane> for various cleanup pull requests
 
 =back

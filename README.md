@@ -77,7 +77,7 @@ that's not an URI.
 
 Thanks to
 
-- <Paul Cochrane|https://github.com/paultcochrane> for various cleanup pull requests
+- [Paul Cochrane](https://github.com/paultcochrane) for various cleanup pull requests
 
 # AUTHOR
 
