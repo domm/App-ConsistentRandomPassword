@@ -31,7 +31,6 @@ sub match_site {
     my $site  = $self->site;
     my $sites = $self->get_config;
 
-    my $matched = {};
     foreach my $c (@$sites) {
         my $match = $c->{match};
         my $rx    = qr/$match/;
@@ -188,7 +187,6 @@ sub pwd_simple_nonletter {
 }
 
 sub site_from_firefox {
-    my $site;
     my $ffdir = dir( File::HomeDir->my_home, '.mozilla/firefox' );
     return unless -d $ffdir;
     while ( my $thing = $ffdir->next ) {
