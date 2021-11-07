@@ -7,17 +7,11 @@ use Term::ReadKey;
 use Clipboard;
 
 # PODNAME: crp.pl
+# ABSTRACT: Create consistent random passwords
+# VERSION
 
 # try to get site from commandline
 my $site = shift @ARGV;
-
-# try to get site from firefox
-unless ($site) {
-    $site = App::ConsistentRandomPassword::site_from_firefox;
-    if ($site) {
-        say "Got site from firefox: $site";
-    }
-}
 
 # ask for site
 unless ($site) {
