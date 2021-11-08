@@ -13,7 +13,7 @@ version 0.900
         ->password( 'hunter2' );
 
     # or use the script included with this dist:
-    ~# crp.pl https://example.com
+    ~$ crp.pl https://example.com
     key: <ENTER YOUR SECRET>
     Your password for 'example.com' is ready to paste
 

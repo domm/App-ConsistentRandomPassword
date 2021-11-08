@@ -12,7 +12,7 @@ use Digest::SHA1 qw(sha1_hex);
 use Data::Random qw(:all);
 use URI;
 use JSON qw(decode_json);
-use File::HomeDir;
+use File::XDG;
 use Path::Class;
 
 use base qw(Class::Accessor::Fast);
@@ -45,26 +45,31 @@ sub match_site {
 sub get_config {
     my $self = shift;
 
-    my $file = file( File::HomeDir->my_home, '.crp.json' );
-    unless ( -e $file ) {
-        say "No config found at $file, you might want to set one up...";
-        return [{
-            match   => ".*",
-        }];
-    }
-    my $json = $file->slurp;
-    my $sites = decode_json($json);
-
-    $self->sites($sites);
-
-    my $global_entropy = file( File::HomeDir->my_home, '.crp.entropy' );
-    if ( -e $global_entropy ) {
-        my $entropy = $global_entropy->slurp;
-        $self->global_entropy($entropy);
+    my $sites;
+    my $xdg = File::XDG->new(name => 'App-ConsistentRandomPassword');
+    my $config_file = $xdg->config_home->file('crp.json');
+    if (!-e $config_file) {
+        $config_file->parent->mkpath;
+        $config_file->spew('[{"match":".*"}]');
+        say STDERR "No config file found at, created a default one at ".$config_file->stringify;
+        $sites = [{match=>'.*'}];
     }
     else {
-        say "You should set up a global entropy file at $global_entropy";
+        my $json = $config_file->slurp;
+        my $sites = decode_json($json);
+        if ($sites->@* == 1 && $sites->[0]{match} eq '.*') {
+            say STDERR "You're still using the default config in ".$config_file->stringify. ", maybe you want to customize it?";
+        }
     }
+    $self->sites($sites);
+
+    my $global_entropy = $xdg->config_home->file( 'crp.entropy' );
+    unless (-e $global_entropy ) {
+        $global_entropy->spew($self->pwd_alphanumeric.$$);
+        say "Set up a default global entropy seed at ".$global_entropy;
+    }
+    my $entropy = $global_entropy->slurp;
+    $self->global_entropy($entropy);
 
     return $sites;
 }
@@ -195,7 +200,7 @@ q{ listening to: Anna Mabo - Notre Dame };
       ->password( 'hunter2' );
 
   # or use the script included with this dist:
-  ~# crp.pl https://example.com
+  ~$ crp.pl https://example.com
   key: <ENTER YOUR SECRET>
   Your password for 'example.com' is ready to paste
 
