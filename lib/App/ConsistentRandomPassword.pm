@@ -56,7 +56,7 @@ sub get_config {
     }
     else {
         my $json = $config_file->slurp;
-        my $sites = decode_json($json);
+        $sites = decode_json($json);
         if ($sites->@* == 1 && $sites->[0]{match} eq '.*') {
             say STDERR "You're still using the default config in ".$config_file->stringify. ", maybe you want to customize it?";
         }
@@ -66,7 +66,7 @@ sub get_config {
     my $global_entropy = $xdg->config_home->file( 'crp.entropy' );
     unless (-e $global_entropy ) {
         $global_entropy->spew($self->pwd_alphanumeric.$$);
-        say "Set up a default global entropy seed at ".$global_entropy;
+        say "Created a new default global entropy seed at ".$global_entropy;
     }
     my $entropy = $global_entropy->slurp;
     $self->global_entropy($entropy);
